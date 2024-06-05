@@ -1,38 +1,94 @@
-import React from 'react';
-import { Bar } from 'react-chartjs-2';
-
-const data = {
-  labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-  datasets: [
-    {
-      label: 'Votes',
-      backgroundColor: 'rgba(75, 192, 192, 0.2)',
-      borderColor: 'rgba(75, 192, 192, 1)',
-      borderWidth: 1,
-      hoverBackgroundColor: 'rgba(75, 192, 192, 0.4)',
-      hoverBorderColor: 'rgba(75, 192, 192, 1)',
-      data: [12, 19, 3, 5, 2, 3],
-    },
-  ],
-};
-
-const options = {
-  maintainAspectRatio: false,
-  scales: {
-    y: {
-      beginAtZero: true,
-    },
-  },
-};
+import React, { useState } from 'react';
+import {
+  Button,
+  TextField,
+  MenuItem,
+  Box,
+} from '@mui/material';
 
 const PredictSingle = () => {
+  const [formData, setFormData] = useState({
+    Department: '',
+    Gender: '',
+    Mode: '',
+    GPA: '',
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log('Form data:', formData);
+    // Normally, you would make an API request here
+  };
+
   return (
-    <div className="p-6 bg-white shadow rounded">
-      <h2 className="text-xl font-bold mb-2">Predict Single</h2>
-      <div className="h-64">
-        <Bar data={data} options={options} />
-      </div>
-    </div>
+    <Box>
+      <h2>Predict Graduation</h2>
+      <form onSubmit={handleSubmit}>
+        <TextField
+          select
+          margin="dense"
+          label="Department"
+          name="Department"
+          value={formData.Department}
+          onChange={handleChange}
+          fullWidth
+          required
+        >
+          <MenuItem value="Fulltime">Computer_Application</MenuItem>
+          <MenuItem value="Parttime">Pharmacology</MenuItem>
+          <MenuItem value="Parttime">Computer_Networking_and_Security</MenuItem>
+        </TextField>
+
+        <TextField
+          margin="dense"
+          select
+          label="Gender"
+          name="Gender"
+          value={formData.Gender}
+          onChange={handleChange}
+          fullWidth
+          required
+        >
+          <MenuItem value="Male">Male</MenuItem>
+          <MenuItem value="Female">Female</MenuItem>
+        </TextField>
+        <TextField
+          margin="dense"
+          select
+          label="Mode"
+          name="Mode"
+          value={formData.Mode}
+          onChange={handleChange}
+          fullWidth
+          required
+        >
+          <MenuItem value="Fulltime">Fulltime</MenuItem>
+          <MenuItem value="Parttime">Parttime</MenuItem>
+        </TextField>
+        <TextField
+          margin="dense"
+          label="GPA"
+          name="GPA"
+          type="number"
+          step="0.01"
+          value={formData.GPA}
+          onChange={handleChange}
+          fullWidth
+          required
+        />
+        <Button type="submit" variant="contained" color="primary">
+          Predict
+        </Button>
+      </form>
+    </Box>
   );
 };
 

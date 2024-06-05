@@ -23,6 +23,13 @@ export const fileApi = createApi({
         responseHandler: (response) => response.json(), // Ensure response is parsed as JSON
       }),
     }),
+    singlePredict: builder.query({
+      query: () => ({
+        url: '/single-predict',
+        method: 'POST',
+        responseHandler: (response) => response.json(), // Ensure response is parsed as JSON
+      }),
+    }),
     getChartData: builder.query({
       query: () => ({
         url: '/chart-data',
@@ -43,6 +50,7 @@ export const fileApi = createApi({
 export const {
   useUploadFileMutation,
   useGetResultsQuery,
+  useSinglePredictMutation,
   useGetChartDataQuery,
   useGetSummaryChartDataQuery,
 } = fileApi;
