@@ -21,9 +21,6 @@ client = MongoClient('localhost', 27017)
 db = client['predictions_db']
 predictions_collection = db['predictions']
 
-
-
-
 @app.route('/')
 def serve_react_app():
     return send_from_directory(app.static_folder, 'index.html')
@@ -65,8 +62,8 @@ def predict():
         input_data['Prediction'] = ["Will Graduate" if pred == 1 else "Dropout" for pred in predictions]
 
         # Revert Gender and Mode to original values before saving to MongoDB
-        input_data['Gender'] = input_data['Gender'].replace({1: 'Male', 0: 'Female'})
-        input_data['Mode'] = input_data['Mode'].replace({1: 'Parttime', 0: 'Fulltime'})
+        input_data['Gender'] = label_encoder_gender.inverse_transform(input_data['Gender'])
+        input_data['Mode'] = label_encoder_mode.inverse_transform(input_data['Mode'])
 
         # Store results in MongoDB
         result = input_data.to_dict(orient='records')
@@ -80,6 +77,39 @@ def predict():
         return jsonify(message="Predictions stored in database"), 200
     except Exception as e:
         logging.error(f"Error in prediction: {e}")
+        return jsonify(error=str(e)), 500
+
+@app.route('/single-predict', methods=['POST'])
+def single_predict():
+    data = request.json
+
+    try:
+        # Convert the input JSON to DataFrame
+        input_data = pd.DataFrame([data])
+        logging.info(f"Input data: {input_data}")
+
+        # Apply Label Encoding to 'Gender' and 'Mode'
+        input_data['Gender'] = label_encoder_gender.transform(input_data['Gender'])
+        input_data['Mode'] = label_encoder_mode.transform(input_data['Mode'])
+
+        logging.info(f"Data after encoding: {input_data}")
+
+        # Transform the input data using the loaded ColumnTransformer
+        transformed_data = column_transformer.transform(input_data)
+        logging.info(f"Transformed data: {transformed_data}")
+
+        # Apply feature scaling
+        transformed_data = sc.transform(transformed_data)
+
+        # Make prediction
+        prediction = model.predict(transformed_data)[0]
+
+        # Determine the prediction label
+        prediction_label = "Will Graduate" if prediction == 1 else "Dropout"
+
+        return jsonify(prediction=prediction_label), 200
+    except Exception as e:
+        logging.error(f"Error in single prediction: {e}")
         return jsonify(error=str(e)), 500
 
 @app.route('/results', methods=['GET'])
