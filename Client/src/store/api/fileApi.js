@@ -23,10 +23,14 @@ export const fileApi = createApi({
         responseHandler: (response) => response.json(), // Ensure response is parsed as JSON
       }),
     }),
-    singlePredict: builder.query({
-      query: () => ({
+    singlePredict: builder.mutation({
+      query: (formData) => ({
         url: '/single-predict',
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
         responseHandler: (response) => response.json(), // Ensure response is parsed as JSON
       }),
     }),

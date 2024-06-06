@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
-import {
-  Button,
-  TextField,
-  MenuItem,
-  Box,
-} from '@mui/material';
+import { Button, TextField, MenuItem, Box } from '@mui/material';
+import { useSinglePredictMutation } from '../store/api/fileApi'; // Adjust the import path accordingly
 
 const PredictSingle = () => {
   const [formData, setFormData] = useState({
@@ -14,6 +10,8 @@ const PredictSingle = () => {
     GPA: '',
   });
 
+  const [singlePredict, { data, error, isLoading }] = useSinglePredictMutation();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -22,10 +20,14 @@ const PredictSingle = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form data:', formData);
-    // Normally, you would make an API request here
+    try {
+      const response = await singlePredict(formData).unwrap();
+      console.log('Prediction response:', response);
+    } catch (err) {
+      console.error('Failed to predict:', err);
+    }
   };
 
   return (
@@ -42,9 +44,10 @@ const PredictSingle = () => {
           fullWidth
           required
         >
-          <MenuItem value="Fulltime">Computer_Application</MenuItem>
-          <MenuItem value="Parttime">Pharmacology</MenuItem>
-          <MenuItem value="Parttime">Computer_Networking_and_Security</MenuItem>
+          <MenuItem value="Computer_Application">Computer Application</MenuItem>
+          <MenuItem value="Pharmacology">Pharmacology</MenuItem>
+          <MenuItem value="Computer_Networking_and_Security">Computer Networking and Security</MenuItem>
+          <MenuItem value="Medical_Laboratory_Science">Medical Laboratory Science</MenuItem>
         </TextField>
 
         <TextField
@@ -84,10 +87,21 @@ const PredictSingle = () => {
           fullWidth
           required
         />
-        <Button type="submit" variant="contained" color="primary">
-          Predict
+        <Button type="submit" variant="contained" color="primary" disabled={isLoading}>
+          {isLoading ? 'Predicting...' : 'Predict'}
         </Button>
       </form>
+      {data && (
+        <Box mt={2}>
+          <h3>Prediction Result</h3>
+          <p>{data.prediction}</p>
+        </Box>
+      )}
+      {error && (
+        <Box mt={2} color="red">
+          <p>Error: {error.message}</p>
+        </Box>
+      )}
     </Box>
   );
 };
