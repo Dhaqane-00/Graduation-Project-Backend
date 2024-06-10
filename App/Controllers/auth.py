@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify, current_app
 from werkzeug.utils import secure_filename
 from models.User import User
 import os
+from bson import ObjectId
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -53,10 +54,11 @@ def login():
     if user_data and User.verify_password(user_data['password'], password):
         token = User.generate_token(email, user_data['role'], user_data['status'])
         image_url = user_data.get('image', f'{current_app.config["BASE_URL"]}/image/default.jpg')
-        
-        # Convert ObjectId to string
+
+        # Ensure all ObjectId fields are converted to strings
         user_data['id'] = str(user_data['_id'])
-        
-        return jsonify(user_data=user_data, token=token, image_url=image_url), 200
+        user_data.pop('_id')  # Remove the original ObjectId
+
+        return jsonify(user_data=user_data, token=token,), 200
     else:
         return jsonify(message="Invalid email or password"), 401
