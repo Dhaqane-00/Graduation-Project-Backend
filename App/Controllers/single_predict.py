@@ -6,11 +6,11 @@ import logging
 bp = Blueprint('single_predict', __name__)
 
 # Load the saved encoders, scaler, and model
-label_encoder_gender = joblib.load('label_encoder_gender.pkl')
-label_encoder_mode = joblib.load('label_encoder_mode.pkl')
-column_transformer = joblib.load('ColumnTransformer.pkl')
-sc = joblib.load('StandardScaler.pkl')
-model = joblib.load('model.pkl')
+label_encoder_gender = joblib.load('Models/label_encoder_gender.pkl')
+label_encoder_mode = joblib.load('Models/label_encoder_mode.pkl')
+column_transformer = joblib.load('Models/ColumnTransformer.pkl')
+sc = joblib.load('Models/StandardScaler.pkl')
+model = joblib.load('Models/model.pkl')
 
 @bp.route('/single-predict', methods=['POST'])
 def single_predict():

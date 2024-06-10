@@ -1,12 +1,17 @@
 from flask import Flask
-from flask_cors import COR
+from flask_cors import CORS
+import os
+import sys
+
+# Add the parent directory to the Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 def create_app():
     app = Flask(__name__, static_folder='../frontend/build', static_url_path='/')
     CORS(app)  # Enable CORS for all routes
 
     with app.app_context():
-        from app.routes import predict, single_predict, results, chart_data, summary_chart_data
+        from Controllers import predict, single_predict, results, chart_data, summary_chart_data
         app.register_blueprint(predict.bp)
         app.register_blueprint(single_predict.bp)
         app.register_blueprint(results.bp)
