@@ -1,32 +1,47 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
+from werkzeug.utils import secure_filename
 from models.User import User
-from bson import ObjectId
+import os
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
-def convert_objectid_to_str(user_data):
-    if '_id' in user_data:
-        user_data['_id'] = str(user_data['_id'])
-    return user_data
-
 @bp.route('/signup', methods=['POST'])
 def signup():
-    data = request.get_json()
+    data = request.form
     name = data.get('name')
     email = data.get('email')
     password = data.get('password')
-    role = data.get('role', 'User')  # Default role is 'User'
-    status = data.get('status', 'Active')  # Default status is 'Active'
+    role = data.get('role', 'User')
+    status = data.get('status', 'Active')
+
+    if 'image' in request.files:
+        image = request.files['image']
+        filename = secure_filename(image.filename)
+        image_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+        image.save(image_path)
+    else:
+        filename = 'default.jpg'
+
+    image_url = f'{current_app.config["BASE_URL"]}/image/{filename}'
 
     if User.find_by_email(email):
         return jsonify(message="User already exists"), 400
 
-    new_user = User(name, email, password, role, status)
+    new_user = User(name, email, password, role, status, image_url)
     new_user.save_to_db()
 
     token = User.generate_token(email, role, status)
 
-    return jsonify(message="User registered successfully", token=token), 201
+    user_data = {
+        "id": str(new_user._id),
+        "name": new_user.name,
+        "email": new_user.email,
+        "role": new_user.role,
+        "status": new_user.status,
+        "image": new_user.image
+    }
+
+    return jsonify(message="User registered successfully", user_data=user_data, token=token), 201
 
 @bp.route('/login', methods=['POST'])
 def login():
@@ -37,7 +52,11 @@ def login():
     user_data = User.find_by_email(email)
     if user_data and User.verify_password(user_data['password'], password):
         token = User.generate_token(email, user_data['role'], user_data['status'])
-        user_data = convert_objectid_to_str(user_data)
-        return jsonify(user_data=user_data, token=token), 200
+        image_url = user_data.get('image', f'{current_app.config["BASE_URL"]}/image/default.jpg')
+        
+        # Convert ObjectId to string
+        user_data['id'] = str(user_data['_id'])
+        
+        return jsonify(user_data=user_data, token=token, image_url=image_url), 200
     else:
         return jsonify(message="Invalid email or password"), 401

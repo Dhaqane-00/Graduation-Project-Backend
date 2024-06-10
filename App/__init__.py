@@ -10,14 +10,21 @@ def create_app():
     # Load environment variables from .env file
     load_dotenv()
 
+    UPLOAD_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'uploads')
+    if not os.path.exists(UPLOAD_FOLDER):
+        os.makedirs(UPLOAD_FOLDER)
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+    app.config['BASE_URL'] = os.getenv('BASE_URL', 'http://localhost:5000')
+
     with app.app_context():
-        from Controllers import predict, single_predict, results, chart_data, summary_chart_data, auth
+        from Controllers import predict, single_predict, results, chart_data, summary_chart_data, auth, image
         app.register_blueprint(predict.bp)
         app.register_blueprint(single_predict.bp)
         app.register_blueprint(results.bp)
         app.register_blueprint(chart_data.bp)
         app.register_blueprint(summary_chart_data.bp)
         app.register_blueprint(auth.bp)
+        app.register_blueprint(image.bp)
 
         @app.route('/')
         def serve_react_app():
