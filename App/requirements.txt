@@ -3,3 +3,5 @@ Flask-CORS==3.0.10
 pandas==1.5.3
 pymongo==4.3.3
 joblib==1.2.0
+PyJWT==2.8.0
+python-dotenv==1.0.1
