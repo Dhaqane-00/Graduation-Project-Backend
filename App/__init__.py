@@ -1,7 +1,11 @@
 from flask import Flask
 from flask_cors import CORS
+from flask_mail import Mail
 import os
 from dotenv import load_dotenv
+
+# Initialize Flask-Mail
+mail = Mail()
 
 def create_app():
     app = Flask(__name__, static_folder='../frontend/build', static_url_path='/')
@@ -15,6 +19,21 @@ def create_app():
         os.makedirs(UPLOAD_FOLDER)
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
     app.config['BASE_URL'] = os.getenv('BASE_URL', 'http://localhost:5000')
+
+    # Set RESET_URL configuration
+    app.config['RESET_URL'] = os.getenv('RESET_URL')
+
+    # Configure Flask-Mail
+    app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER', 'smtp.gmail.com')
+    app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT', 587))
+    app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS', 'True').lower() in ['true', '1', 't']
+    app.config['MAIL_USE_SSL'] = os.getenv('MAIL_USE_SSL', 'False').lower() in ['true', '1', 't']
+    app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+    app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+    app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER', app.config['MAIL_USERNAME'])
+
+    # Initialize Flask-Mail with app context
+    mail.init_app(app)
 
     with app.app_context():
         from Controllers import predict, single_predict, results, chart_data, summary_chart_data, auth, image
