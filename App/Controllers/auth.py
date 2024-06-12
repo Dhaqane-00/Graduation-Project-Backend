@@ -20,7 +20,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 def signup():
     data = request.form
     name = data.get('name')
-    email = data.get('email')
+    email = data.get('email').lower()
     password = data.get('password')
     role = data.get('role', 'User')
     status = data.get('status', 'Active')
@@ -57,7 +57,7 @@ def signup():
 @bp.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
-    email = data.get('email')
+    email = data.get('email').lower()
     password = data.get('password')
 
     user_data = User.find_by_email(email)
@@ -77,7 +77,7 @@ def login():
 def update(user_id):
     data = request.form
     name = data.get('name')
-    email = data.get('email')
+    email = data.get('email').lower()
     password = data.get('password')
     role = data.get('role')
     status = data.get('status')
@@ -145,7 +145,7 @@ mail = Mail(current_app)
 @bp.route('/forgot-password', methods=['POST'])
 def forgot_password():
     data = request.get_json()
-    email = data.get('email')
+    email = data.get('email').lower()
 
     user_data = User.find_by_email(email)
     if user_data is None:
