@@ -5,3 +5,6 @@ pymongo==4.3.3
 joblib==1.2.0
 pip install itsdangerous
 pip install Flask-Mail
+python -m pip install Flask-Mail
+python -m pip install python-dotenv
+python -m pip install PyJWT    
