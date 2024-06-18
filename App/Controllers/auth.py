@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, current_app, render_template_string
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash
-from models.User import User
+from Models.User import User
 import os
 from bson import ObjectId
 from itsdangerous import URLSafeTimedSerializer
@@ -163,28 +163,13 @@ def forgot_password():
     except Exception as e:
         return jsonify(message="Error sending email"), 500
 
-# Route to verify the token and render the password reset form
-@bp.route('/reset-password', methods=['GET'])
-def verify_token():
-    token = request.args.get('token')
-    email = User.verify_reset_token(token)
-    if email is None:
-        return jsonify(message="Invalid or expired token"), 400
 
-    # Render a simple password reset form
-    return render_template_string('''
-        <form action="/auth/reset-password" method="post">
-            <input type="hidden" name="token" value="{{ token }}">
-            <label for="password">New Password:</label>
-            <input type="password" id="password" name="password">
-            <button type="submit">Reset Password</button>
-        </form>
-    ''', token=token)
 
 @bp.route('/reset-password', methods=['POST'])
 def reset_password():
-    token = request.form.get('token')  # Get the token from the form data
-    password = request.form.get('password')
+    data = request.get_json()
+    token = data.get('token')
+    password = data.get('password')
 
     email = User.verify_reset_token(token)
     if email is None:
@@ -197,3 +182,4 @@ def reset_password():
     User.reset_password(email, password)
 
     return jsonify(message="Password reset successfully"), 200
+

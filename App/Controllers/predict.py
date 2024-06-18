@@ -7,11 +7,11 @@ from pymongo import MongoClient
 bp = Blueprint('predict', __name__)
 
 # Load the saved encoders, scaler, and model
-label_encoder_gender = joblib.load('Models/label_encoder_gender.pkl')
-label_encoder_mode = joblib.load('Models/label_encoder_mode.pkl')
-column_transformer = joblib.load('Models/ColumnTransformer.pkl')
-sc = joblib.load('Models/StandardScaler.pkl')
-model = joblib.load('Models/model.pkl')
+label_encoder_sex = joblib.load('Models/label_encoder_sex_many.pkl')
+label_encoder_mode = joblib.load('Models/label_encoder_mode_many.pkl')
+column_transformer = joblib.load('Models/ColumnTransformer_many.pkl')
+sc = joblib.load('Models/StandardScaler_many.pkl')
+model = joblib.load('Models/model_many.pkl')
 
 # Set up MongoDB connection
 client = MongoClient('localhost', 27017)
@@ -27,7 +27,7 @@ def predict():
         logging.info(f"Input data columns: {input_data.columns.tolist()}")
         logging.info(f"Input data shape: {input_data.shape}")
 
-        input_data['Gender'] = label_encoder_gender.transform(input_data['Gender'])
+        input_data['Sex'] = label_encoder_sex.transform(input_data['Sex'])
         input_data['Mode'] = label_encoder_mode.transform(input_data['Mode'])
         logging.info(f"Data after encoding: {input_data.head()}")
 
@@ -38,7 +38,7 @@ def predict():
         predictions = model.predict(transformed_data)
         input_data['Prediction'] = ["Will Graduate" if pred == 1 else "Dropout" for pred in predictions]
 
-        input_data['Gender'] = label_encoder_gender.inverse_transform(input_data['Gender'])
+        input_data['Sex'] = label_encoder_sex.inverse_transform(input_data['Sex'])
         input_data['Mode'] = label_encoder_mode.inverse_transform(input_data['Mode'])
 
         result = input_data.to_dict(orient='records')

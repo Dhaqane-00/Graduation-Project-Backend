@@ -18,7 +18,7 @@ def create_app():
     if not os.path.exists(UPLOAD_FOLDER):
         os.makedirs(UPLOAD_FOLDER)
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-    app.config['BASE_URL'] = os.getenv('BASE_URL', 'http://localhost:5000')
+    app.config['BASE_URL'] = os.getenv('BASE_URL')
 
     # Set RESET_URL configuration
     app.config['RESET_URL'] = os.getenv('RESET_URL')
