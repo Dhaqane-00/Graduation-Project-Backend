@@ -9,4 +9,4 @@ python -m pip install Flask-Mail
 python -m pip install python-dotenv
 python -m pip install PyJWT
 python -m  pip uninstall scikit-learn 
-python -m pip install scikit-learn==1.4.0  --only-binary=scikit-learn
+# python -m pip install scikit-learn==1.4.0  --only-binary=scikit-learn
