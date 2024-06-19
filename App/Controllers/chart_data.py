@@ -14,11 +14,19 @@ def get_chart_data():
     try:
         pipeline = [
             {
+                '$project': {
+                    'Department': 1,
+                    'Prediction': 1,
+                    'Sex': {'$toLower': '$Sex'},
+                    'Mode': 1
+                }
+            },
+            {
                 '$group': {
                     '_id': {
                         'Department': '$Department',
                         'Prediction': '$Prediction',
-                        'Gender': '$Gender',
+                        'Sex': '$Sex',
                         'Mode': '$Mode'
                     },
                     'count': {'$sum': 1}
@@ -30,7 +38,7 @@ def get_chart_data():
                     'predictions': {
                         '$push': {
                             'Prediction': '$_id.Prediction',
-                            'Gender': '$_id.Gender',
+                            'Sex': '$_id.Sex',
                             'Mode': '$_id.Mode',
                             'count': '$count'
                         }

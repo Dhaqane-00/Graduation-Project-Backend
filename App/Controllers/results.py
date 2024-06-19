@@ -26,7 +26,7 @@ def get_results():
             "Att-S6": 1,
             "Att-S7": 1,
             "Att-S8": 1,
-            "Discounts": 1,
+            "Schollarship": 1,
             "NO-Re-exams": 1,
             "GPA-S1": 1,
             "GPA-S2": 1,
