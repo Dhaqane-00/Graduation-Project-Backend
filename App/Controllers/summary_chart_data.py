@@ -130,3 +130,54 @@ def get_department_summary():
     except Exception as e:
         logging.error(f"Error fetching department summary data: {e}")
         return jsonify(error=str(e)), 500
+    
+
+@bp.route('/Re-exams-summary', methods=['GET'])
+def get_graduates_dropouts_summary():
+    try:
+        pipeline = [
+            {
+                '$match': {
+                    'NO-Re-exams': {'$gt': 0}
+                }
+            },
+            {
+                '$group': {
+                    '_id': {
+                        'Department': '$Department',
+                        'Prediction': '$Prediction',
+                        'ReExam': '$NO-Re-exams'
+                    },
+                    'count': {'$sum': 1}
+                }
+            },
+            {
+                '$group': {
+                    '_id': '$_id.Department',
+                    'details': {
+                        '$push': {
+                            'Prediction': '$_id.Prediction',
+                            'ReExam': '$_id.NO-Re-exams',
+                            'count': '$count'
+                        }
+                    },
+                    'total': {'$sum': '$count'},
+                    'total_graduated': {
+                        '$sum': {
+                            '$cond': [{'$eq': ['$_id.Prediction', 'Will Graduate']}, '$count', 0]
+                        }
+                    },
+                    'total_dropout': {
+                        '$sum': {
+                            '$cond': [{'$eq': ['$_id.Prediction', 'Dropout']}, '$count', 0]
+                        }
+                    }
+                }
+            }
+        ]
+        graduates_dropouts_summary = list(predictions_collection.aggregate(pipeline))
+        logging.info(f"Graduates and dropouts summary data fetched: {graduates_dropouts_summary}")
+        return jsonify(graduates_dropouts_summary=graduates_dropouts_summary), 200
+    except Exception as e:
+        logging.error(f"Error fetching graduates and dropouts summary data: {e}")
+        return jsonify(error=str(e)), 500

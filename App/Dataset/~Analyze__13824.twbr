@@ -625,14 +625,6 @@
       <layout _.fcp.SchemaViewerObjectModel.false...dim-percentage='0.5' _.fcp.SchemaViewerObjectModel.false...measure-percentage='0.4' dim-ordering='alphabetic' measure-ordering='alphabetic' show-structure='true' />
       <style>
         <style-rule element='mark'>
-          <encoding attr='color' field='[none:Status:nk]' type='palette'>
-            <map to='#59a14f'>
-              <bucket>&quot;Graduated&quot;</bucket>
-            </map>
-            <map to='#e15759'>
-              <bucket>&quot;Dropout&quot;</bucket>
-            </map>
-          </encoding>
           <encoding attr='color' field='[:Measure Names]' type='palette'>
             <map to='#499894'>
               <bucket>&quot;[federated.0ysjfmk0seq20615lqlj41o6gzp9].[sum:Att-S7:qk]&quot;</bucket>
@@ -789,6 +781,14 @@
             </map>
             <map to='#ffbe7d'>
               <bucket>&quot;[federated.0ysjfmk0seq20615lqlj41o6gzp9].[sum:Att-S3:qk]&quot;</bucket>
+            </map>
+          </encoding>
+          <encoding attr='color' field='[none:Status:nk]' type='palette'>
+            <map to='#59a14f'>
+              <bucket>&quot;Graduated&quot;</bucket>
+            </map>
+            <map to='#e15759'>
+              <bucket>&quot;Dropout&quot;</bucket>
             </map>
           </encoding>
         </style-rule>
@@ -1392,8 +1392,8 @@
         <devicelayout auto-generated='true' name='Phone'>
           <size maxheight='1100' minheight='1100' sizing-mode='vscroll' />
           <zones>
-            <zone h='100000' id='16' type-v2='layout-basic' w='100000' x='0' y='0'>
-              <zone h='98000' id='15' param='vert' type-v2='layout-flow' w='98400' x='800' y='1000'>
+            <zone h='100000' id='18' type-v2='layout-basic' w='100000' x='0' y='0'>
+              <zone h='98000' id='17' param='vert' type-v2='layout-flow' w='98400' x='800' y='1000'>
                 <zone fixed-size='280' h='49000' id='3' is-fixed='true' name='Scholarship' w='82400' x='800' y='1000'>
                   <zone-style>
                     <format attr='border-color' value='#000000' />
@@ -1486,7 +1486,7 @@
               </zone>
             </zone>
             <zone fixed-size='160' h='49100' id='6' is-fixed='true' param='vert' type-v2='layout-flow' w='16000' x='83200' y='1000'>
-              <zone h='8250' id='8' name='Total' pane-specification-id='0' param='[federated.0ysjfmk0seq20615lqlj41o6gzp9].[:Measure Names]' type-v2='color' w='16000' x='83200' y='1000'>
+              <zone h='2750' id='8' name='Total' pane-specification-id='0' param='[federated.0ysjfmk0seq20615lqlj41o6gzp9].[:Measure Names]' type-v2='color' w='16000' x='83200' y='1000'>
                 <zone-style>
                   <format attr='border-color' value='#000000' />
                   <format attr='border-style' value='none' />
@@ -1524,8 +1524,8 @@
         <devicelayout auto-generated='true' name='Phone'>
           <size maxheight='1250' minheight='1250' sizing-mode='vscroll' />
           <zones>
-            <zone h='100000' id='17' type-v2='layout-basic' w='100000' x='0' y='0'>
-              <zone h='98000' id='16' param='vert' type-v2='layout-flow' w='98400' x='800' y='1000'>
+            <zone h='100000' id='19' type-v2='layout-basic' w='100000' x='0' y='0'>
+              <zone h='98000' id='18' param='vert' type-v2='layout-flow' w='98400' x='800' y='1000'>
                 <zone fixed-size='280' h='49100' id='3' is-fixed='true' name='Total' w='41200' x='800' y='1000'>
                   <zone-style>
                     <format attr='border-color' value='#000000' />
@@ -1648,7 +1648,7 @@
       </cards>
       <simple-id uuid='{AB1B7CA5-C77C-4D9C-B44B-3DECAFB7DA70}' />
     </window>
-    <window class='worksheet' maximized='true' name='Mode'>
+    <window class='worksheet' name='Mode'>
       <cards>
         <edge name='left'>
           <strip size='160'>
@@ -1799,7 +1799,7 @@
       </cards>
       <simple-id uuid='{1C35DE1E-27DE-49BE-A535-BB5FB5BC49C9}' />
     </window>
-    <window class='dashboard' name='Total D'>
+    <window class='dashboard' maximized='true' name='Total D'>
       <viewpoints>
         <viewpoint name='Departments' />
         <viewpoint name='Mode'>
