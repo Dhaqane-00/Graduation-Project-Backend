@@ -181,3 +181,4 @@ def get_graduates_dropouts_summary():
     except Exception as e:
         logging.error(f"Error fetching graduates and dropouts summary data: {e}")
         return jsonify(error=str(e)), 500
+ 
