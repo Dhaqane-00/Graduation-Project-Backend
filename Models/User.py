@@ -4,8 +4,17 @@ import datetime
 from pymongo import MongoClient
 import os
 from bson.objectid import ObjectId
+from dotenv import load_dotenv
 
-client = MongoClient('localhost', 27017)
+# Load environment variables from the .env file
+load_dotenv()
+
+# Get the MongoDB URL from the environment variables
+MONGODB_URL = os.getenv('MONGODB_URL')
+SECRET_KEY = os.getenv('SECRET_KEY')
+
+# Initialize the MongoDB client with the Atlas connection string
+client = MongoClient(MONGODB_URL)
 db = client['predictions_db']
 users_collection = db['users']
 

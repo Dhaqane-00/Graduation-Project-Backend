@@ -2,7 +2,12 @@ from flask import Blueprint, request, jsonify
 import pandas as pd
 import joblib
 import logging
+import os
 from pymongo import MongoClient
+from dotenv import load_dotenv
+
+# Load environment variables from the .env file
+load_dotenv()
 
 bp = Blueprint('predict', __name__)
 
@@ -13,8 +18,12 @@ column_transformer = joblib.load('Models/ColumnTransformer_many.pkl')
 sc = joblib.load('Models/StandardScaler_many.pkl')
 model = joblib.load('Models/model_many.pkl')
 
-# Set up MongoDB connection
-client = MongoClient('localhost', 27017)
+# Get the MongoDB URL from the environment variables
+MONGODB_URL = os.getenv('MONGODB_URL')
+SECRET_KEY = os.getenv('SECRET_KEY')
+
+# Initialize the MongoDB client with the Atlas connection string
+client = MongoClient(MONGODB_URL)
 db = client['predictions_db']
 predictions_collection = db['predictions']
 

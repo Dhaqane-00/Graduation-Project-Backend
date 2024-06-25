@@ -1,11 +1,21 @@
 from flask import Blueprint, jsonify
 from pymongo import MongoClient
 import logging
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from the .env file
+load_dotenv()
 
 bp = Blueprint('chart_data', __name__)
 
-# Set up MongoDB connection
-client = MongoClient('localhost', 27017)
+
+# Get the MongoDB URL from the environment variables
+MONGODB_URL = os.getenv('MONGODB_URL')
+SECRET_KEY = os.getenv('SECRET_KEY')
+
+# Initialize the MongoDB client with the Atlas connection string
+client = MongoClient(MONGODB_URL)
 db = client['predictions_db']
 predictions_collection = db['predictions']
 
