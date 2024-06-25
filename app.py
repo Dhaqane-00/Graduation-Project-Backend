@@ -6,8 +6,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Retrieve host and port from environment variables
-host = os.getenv('HOST', '127.0.0.1')
-port = os.getenv('PORT', 5000)
+host = os.getenv('HOST')
+port = os.getenv('PORT')
 
 # Add the parent directory to the Python path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
