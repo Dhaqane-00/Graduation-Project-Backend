@@ -3,6 +3,7 @@ import pandas as pd
 import joblib
 import logging
 import os
+import warnings
 from pymongo import MongoClient
 from dotenv import load_dotenv
 
@@ -10,6 +11,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 bp = Blueprint('predict', __name__)
+
+# Suppress InconsistentVersionWarning from scikit-learn
+warnings.filterwarnings("ignore", category=UserWarning, module='sklearn')
 
 # Load the saved encoders, scaler, and model
 label_encoder_sex = joblib.load('Models/label_encoder_sex_many.pkl')
