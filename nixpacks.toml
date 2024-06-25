@@ -1,15 +1,14 @@
 [phases]
-setup = """
-    python3 -m venv /opt/venv
-    . /Scripts/activate
-    pip install -r requirements.txt
-"""
-start = """
-    . /Scripts/activate
-    python app.py
-"""
+setup = [
+    "python3 -m venv /opt/venv",
+    "source /opt/venv/bin/activate",
+    "pip install -r requirements.txt"
+]
+start = [
+    "source /opt/venv/bin/activate",
+    "python app.py"
+]
 
 [variables]
-HOST = "0.0.0.0"
+HOST = "127.0.0.1"
 PORT = "5000"
-
