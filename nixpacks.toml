@@ -1,11 +1,11 @@
 [phases]
 setup = """
     python3 -m venv /opt/venv
-    . /opt/venv/bin/activate
+    . /Scripts/activate
     pip install -r requirements.txt
 """
 start = """
-    . /opt/venv/bin/activate
+    . /Scripts/activate
     python app.py
 """
 
