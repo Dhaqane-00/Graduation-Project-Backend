@@ -3,6 +3,11 @@ from flask_cors import CORS
 from flask_mail import Mail
 import os
 from dotenv import load_dotenv
+from flask_cors import CORS
+
+app = Flask(__name__)
+CORS(app)
+
 
 # Initialize Flask-Mail
 mail = Mail()

@@ -20,7 +20,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 def signup():
     data = request.form
     name = data.get('name')
-    email = data.get('email').lower()
+    email = data.get('email')
     password = data.get('password')
     role = data.get('role', 'User')
     status = data.get('status', 'Active')
@@ -57,7 +57,7 @@ def signup():
 @bp.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
-    email = data.get('email').lower()
+    email = data.get('email')
     password = data.get('password')
 
     user_data = User.find_by_email(email)
@@ -73,14 +73,28 @@ def login():
     else:
         return jsonify(message="Invalid email or password"), 401
     
+@bp.route('/user/<user_id>', methods=['GET'])
+def get_user(user_id):
+    user_data = User.find_by_id(ObjectId(user_id))
+    if not user_data:
+        return jsonify(message="User not found"), 404
+
+    # Ensure all ObjectId fields are converted to strings
+    user_data['id'] = str(user_data['_id'])
+    user_data.pop('_id')  # Remove the original ObjectId
+
+    return jsonify(user_data=user_data), 200
+
 @bp.route('/update/<user_id>', methods=['PUT'])
 def update(user_id):
     data = request.form
     name = data.get('name')
-    email = data.get('email').lower()
-    password = data.get('password')
-    role = data.get('role')
+    email = data.get('email')
     status = data.get('status')
+    image_file = request.files.get('image')
+
+    print(f'Received data: {data}')
+    print(f'Received image: {image_file.filename if image_file else "No image file"}')
 
     user_data = User.find_by_id(ObjectId(user_id))
     if not user_data:
@@ -101,19 +115,17 @@ def update(user_id):
         user.name = name
     if email:
         user.email = email
-    if password:
-        user.password = generate_password_hash(password)
-    if role:
-        user.role = role
     if status:
         user.status = status
 
-    if 'image' in request.files:
-        image = request.files['image']
-        filename = secure_filename(image.filename)
+    if image_file:
+        filename = secure_filename(image_file.filename)
         image_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
-        image.save(image_path)
+        image_file.save(image_path)
         user.image = f'{current_app.config["BASE_URL"]}/image/{filename}'
+
+    # Debug print before updating the database
+    print(f'Updating user: {user.to_dict()}')
 
     user.update_in_db()  # Save the updated user data
 
@@ -125,6 +137,9 @@ def update(user_id):
         "status": user.status,
         "image": user.image
     }
+
+    # Debug print after updating the database
+    print(f'Updated user data: {user_data}')
 
     return jsonify(message="User updated successfully", user_data=user_data), 200
 

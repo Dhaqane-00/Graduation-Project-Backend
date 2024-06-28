@@ -48,6 +48,13 @@ class User:
     @staticmethod
     def delete_by_id(user_id):
         users_collection.delete_one({"_id": user_id})
+    def to_dict(self):
+        return {
+            'name': self.name,
+            'email': self.email,
+            'status': self.status,
+            'image': self.image
+        }
 
     @staticmethod
     def verify_password(stored_password, provided_password):
