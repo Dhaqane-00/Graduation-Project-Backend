@@ -68,7 +68,7 @@ def get_scholarship_summary():
         pipeline_with_scholarship = [
             {
                 '$match': {
-                    'Schollarship': {'$gt': 0}
+                    'Scholarship': {'$gt': 0}
                 }
             },
             {
@@ -83,7 +83,7 @@ def get_scholarship_summary():
         pipeline_without_scholarship = [
             {
                 '$match': {
-                    'Schollarship': {'$eq': 0}
+                    'Scholarship': {'$eq': 0}
                 }
             },
             {
