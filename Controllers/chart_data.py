@@ -59,7 +59,7 @@ def get_chart_data():
         ]
         chart_data = list(predictions_collection.aggregate(pipeline))
         logging.info(f"Chart data fetched: {chart_data}")
-        return jsonify(chart_data=chart_data), 200
+        return jsonify(chart_data=chart_data), 200 
     except Exception as e:
         logging.error(f"Error fetching chart data: {e}")
         return jsonify(error=str(e)), 500
