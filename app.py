@@ -19,4 +19,4 @@ if __name__ == '__main__':
     import logging
     logging.basicConfig(level=logging.INFO)
     app = create_app()
-    app.run(host=host, port=int(port))
+    app.run(host=host, port=int(port), debug=True)

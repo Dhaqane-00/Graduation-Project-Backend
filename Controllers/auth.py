@@ -90,6 +90,7 @@ def update(user_id):
     data = request.form
     name = data.get('name')
     email = data.get('email')
+    password = data.get('password')
     status = data.get('status')
     image_file = request.files.get('image')
 
@@ -115,6 +116,9 @@ def update(user_id):
         user.name = name
     if email:
         user.email = email
+    if password:
+        hashed_password = generate_password_hash(password)  # Hash the password
+        user.password = hashed_password
     if status:
         user.status = status
 
@@ -133,6 +137,7 @@ def update(user_id):
         "id": str(user._id),
         "name": user.name,
         "email": user.email,
+        "password": user.password,
         "role": user.role,
         "status": user.status,
         "image": user.image
