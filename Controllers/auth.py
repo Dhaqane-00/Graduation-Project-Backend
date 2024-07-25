@@ -20,7 +20,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 def signup():
     data = request.form
     name = data.get('name')
-    email = data.get('email')
+    email = data.get('email').lower()
     password = data.get('password')
     role = data.get('role', 'User')
     status = data.get('status', 'Active')
@@ -57,7 +57,7 @@ def signup():
 @bp.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
-    email = data.get('email')
+    email = data.get('email').lower()
     password = data.get('password')
 
     user_data = User.find_by_email(email)
@@ -84,12 +84,11 @@ def get_user(user_id):
     user_data.pop('_id')  # Remove the original ObjectId
 
     return jsonify(user_data=user_data), 200
-
 @bp.route('/update/<user_id>', methods=['PUT'])
 def update(user_id):
     data = request.form
     name = data.get('name')
-    email = data.get('email')
+    email = data.get('email').lower()
     password = data.get('password')
     status = data.get('status')
     image_file = request.files.get('image')
@@ -116,11 +115,12 @@ def update(user_id):
         user.name = name
     if email:
         user.email = email
-    if password:
-        hashed_password = generate_password_hash(password)  # Hash the password
-        user.password = hashed_password
     if status:
         user.status = status
+
+    if password:
+        user.password = generate_password_hash(password)
+        
 
     if image_file:
         filename = secure_filename(image_file.filename)
