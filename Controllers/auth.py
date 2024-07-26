@@ -237,7 +237,7 @@ def forgot_password():
     <body>
         <div class="container">
             <div class="header">
-                <h2>Password Reset Request</h2>
+                <h2>Student Graduation Prediction</h2>
             </div>
             <div class="content">
                 <h1>Hello,</h1>
