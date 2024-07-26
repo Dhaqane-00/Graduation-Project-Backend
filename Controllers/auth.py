@@ -162,6 +162,7 @@ def delete(user_id):
 serializer = URLSafeTimedSerializer(SECRET_KEY)
 mail = Mail(current_app)
 
+
 @bp.route('/forgot-password', methods=['POST'])
 def forgot_password():
     data = request.get_json()
@@ -175,15 +176,90 @@ def forgot_password():
     token = user.generate_reset_token()
     reset_url = f"{current_app.config['RESET_URL']}?token={token}"
 
+    html = f"""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Password Reset</title>
+        <style>
+            body {{
+                font-family: Arial, sans-serif;
+                background-color: #f4f4f4;
+                color: #333;
+                margin: 0;
+                padding: 0;
+            }}
+            .container {{
+                width: 100%;
+                max-width: 600px;
+                margin: 0 auto;
+                background-color: #ffffff;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                padding: 20px;
+            }}
+            .header {{
+                background-color: #007bff;
+                color: #ffffff;
+                padding: 10px 20px;
+                text-align: center;
+            }}
+            .content {{
+                padding: 20px;
+            }}
+            .content h1 {{
+                color: #007bff;
+            }}
+            .content p {{
+                line-height: 1.6;
+            }}
+            .button {{
+                display: block;
+                width: 100%;
+                max-width: 200px;
+                margin: 20px auto;
+                padding: 10px 20px;
+                background-color: #007bff;
+                color: #ffffff;
+                text-align: center;
+                text-decoration: none;
+                border-radius: 5px;
+            }}
+            .footer {{
+                text-align: center;
+                padding: 10px;
+                color: #777;
+                font-size: 12px;
+            }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h2>Password Reset Request</h2>
+            </div>
+            <div class="content">
+                <h1>Hello,</h1>
+                <p>We received a request to reset your password. Click the button below to reset it:</p>
+                <a href="{reset_url}" class="button">Reset Password</a>
+                <p>If you didn't request a password reset, please ignore this email.</p>
+            </div>
+            <div class="footer">
+                <p>Thank you,<br>Student Graduation Prediction</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+
     try:
         msg = Message("Reset Your Password", recipients=[email])
-        msg.body = f"Click the link below to reset your password:\n{reset_url}"
+        msg.html = html
         mail.send(msg)
         return jsonify(message="Password reset email sent successfully"), 200
     except Exception as e:
         return jsonify(message="Error sending email"), 500
-
-
 
 @bp.route('/reset-password', methods=['POST'])
 def reset_password():
